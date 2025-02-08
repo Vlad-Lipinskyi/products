@@ -1,0 +1,23 @@
+{
+  "products": [
+    {
+    "name": "kiwi",
+    "description": "fruit",
+    "price": 150,
+    "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/02/Kiwi-fruits-582a07b.jpg?quality=90&resize=556,505"
+    }, 
+  
+  {
+    "name": "banana",
+    "description": "fruit",
+    "price": 100,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/2324px-Banana-Single.jpg"
+  }, 
+  
+  {
+    "name": "grape",
+    "description": "fruit",
+    "price": 125,
+    "image": "https://img.imageboss.me/fourwinds/width/425/dpr:2/shop/products/rubyseedlessgrapes.jpg?v=1729716408"
+  }]
+}
