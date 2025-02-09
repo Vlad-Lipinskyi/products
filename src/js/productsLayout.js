@@ -1,7 +1,7 @@
-const productsList = document.querySelector('.products-list')
+const productsList = document.querySelector('.products-list');
 
-export const createMarkup = (productsData)=>{
-    const makrup = productsData.map(obj=>
+export const createMarkup = (productsData) => {
+    const makrup = productsData.map(obj =>
         `<li class="product-item" id="${obj.id}">
             <p class="product-name">${obj.name}</p>
             <p class="product-price">${obj.price}</p>
@@ -10,6 +10,6 @@ export const createMarkup = (productsData)=>{
             <button class="delete-btn" type="button">delete</button>
             <button class="edit-btn" type="button">edit</button>
         </li>`
-    ).join('')
-    productsList.innerHTML = makrup
-}
+    ).join('');
+    productsList.innerHTML = makrup;
+};

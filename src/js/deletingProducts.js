@@ -1,14 +1,28 @@
-import { deleteProductApi } from "./services/deleteProductApi"
-import { getProductsAPI } from "./services/getProductsApi"
-import {createMarkup} from "./productsLayout"
-import { deleteProduct } from "./deletingProducts";
+import { deleteProductApi } from "./services/deleteProductApi";
+import { getProductsAPI } from "./services/getProductsApi";
+import { createMarkup } from "./productsLayout";
 import { openModal } from "./modal/edit-product-modal";
-export const deleteProduct = () =>{
-    const deleteBtnArr = document.querySelectorAll('.delete-btn')
-    deleteBtnArr.forEach(deleteBtn => {
-        deleteBtn.addEventListener('click', async ()=>{
-            await deleteProductApi(deleteBtn.parentElement.id).then(data => data)
-            await getProductsAPI().then(data=>{createMarkup(data); deleteProduct(); openModal()}) 
-        })
-    })
-}
+
+export const deleteProduct = () => {
+    const deleteBtnArr = document.querySelectorAll(".delete-btn");
+
+    deleteBtnArr.forEach((deleteBtn) => {
+        deleteBtn.addEventListener("click", async () => {
+            const productId = deleteBtn.parentElement.id;
+            
+            try {
+                // Видаляємо продукт через API
+                await deleteProductApi(productId);
+                
+                // Оновлюємо список продуктів
+                const data = await getProductsAPI();
+                createMarkup(data); 
+                deleteProduct(); 
+                openModal(); 
+            } catch (error) {
+                console.error("Error while deleting the product:", error);
+                alert("Не вдалося видалити продукт. Спробуйте ще раз.");
+            }
+        });
+    });
+};
