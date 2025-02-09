@@ -685,31 +685,36 @@ parcelHelpers.export(exports, "deleteProduct", ()=>deleteProduct);
 var _deleteProductApi = require("./services/deleteProductApi");
 var _getProductsApi = require("./services/getProductsApi");
 var _productsLayout = require("./productsLayout");
-var _deletingProducts = require("./deletingProducts");
 var _editProductModal = require("./modal/edit-product-modal");
 const deleteProduct = ()=>{
-    const deleteBtnArr = document.querySelectorAll('.delete-btn');
+    const deleteBtnArr = document.querySelectorAll(".delete-btn");
     deleteBtnArr.forEach((deleteBtn)=>{
-        deleteBtn.addEventListener('click', async ()=>{
-            await (0, _deleteProductApi.deleteProductApi)(deleteBtn.parentElement.id).then((data)=>data);
-            await (0, _getProductsApi.getProductsAPI)().then((data)=>{
+        deleteBtn.addEventListener("click", async ()=>{
+            const productId = deleteBtn.parentElement.id;
+            try {
+                await (0, _deleteProductApi.deleteProductApi)(productId);
+                const data = await (0, _getProductsApi.getProductsAPI)();
                 (0, _productsLayout.createMarkup)(data);
-                (0, _deletingProducts.deleteProduct)();
+                deleteProduct();
                 (0, _editProductModal.openModal)();
-            });
+            } catch (error) {
+                console.error("Error while deleting the product:", error);
+                alert("\u041D\u0435 \u0432\u0434\u0430\u043B\u043E\u0441\u044F \u0432\u0438\u0434\u0430\u043B\u0438\u0442\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442. \u0421\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u0449\u0435 \u0440\u0430\u0437.");
+            }
         });
     });
 };
 
-},{"./services/deleteProductApi":"jbHBY","./services/getProductsApi":"77vlQ","./productsLayout":"dViIg","./modal/edit-product-modal":"8DZzw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./deletingProducts":"jiEk7"}],"jbHBY":[function(require,module,exports,__globalThis) {
+},{"./services/deleteProductApi":"jbHBY","./services/getProductsApi":"77vlQ","./productsLayout":"dViIg","./modal/edit-product-modal":"8DZzw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jbHBY":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "deleteProductApi", ()=>deleteProductApi);
 const deleteProductApi = async (id)=>{
     try {
-        return await fetch(`https://67a7982f203008941f680c6c.mockapi.io/products/products${id}`, {
+        var data;
+        return await fetch(`https://67a7982f203008941f680c6c.mockapi.io/products/products/${id}`, {
             method: "DELETE"
-        }).then((data)=>data.json());
+        });
     } catch (error) {
         console.log(error.message);
     }
@@ -724,46 +729,50 @@ var _getProductsApi = require("../services/getProductsApi");
 var _productsLayout = require("../productsLayout");
 var _deletingProducts = require("../deletingProducts");
 const openModal = ()=>{
-    const editBtnArr = document.querySelectorAll('.edit-btn');
+    const editBtnArr = document.querySelectorAll(".edit-btn");
     let parentId;
     editBtnArr.forEach((editBtn)=>{
-        editBtn.addEventListener('click', (e)=>{
-            document.querySelector('.edit-modal').classList.remove('is-hidden');
-            parentId = e.target.parentElement.id;
+        editBtn.addEventListener("click", (e)=>{
+            const productElement = e.target.parentElement;
+            parentId = productElement.id;
+            document.querySelector(".edit-modal").classList.remove("is-hidden");
+            document.querySelector("#name-input").value = productElement.querySelector(".product-name").textContent;
+            document.querySelector("#price-input").value = productElement.querySelector(".product-price").textContent;
+            document.querySelector("#description-input").value = productElement.querySelector(".product-sort").textContent;
+            document.querySelector("#img-input").value = productElement.querySelector(".product-img").src;
         });
     });
-    const formEl = document.querySelector('.edit-form__info');
-    const modalEditEl = document.querySelector('.edit-modal');
-    formEl.addEventListener('submit', async (e)=>{
+    const formEl = document.querySelector(".edit-form__info");
+    const modalEditEl = document.querySelector(".edit-modal");
+    formEl.addEventListener("submit", async (e)=>{
         e.preventDefault();
-        modalEditEl.classList.add('is-hidden');
+        modalEditEl.classList.add("is-hidden");
         const productDataToEdit = {
-            name: `${formEl.elements.name.value}`,
-            price: `${formEl.elements.price.value}`,
-            description: `${formEl.elements.description.value}`,
-            img: `${formEl.elements.img.value}`
+            name: formEl.elements.name.value,
+            price: formEl.elements.price.value,
+            description: formEl.elements.description.value,
+            img: formEl.elements.img.value
         };
-        await (0, _editProductApi.editProductApi)(productDataToEdit, parentId).then((post)=>console.log(post));
-        await (0, _getProductsApi.getProductsAPI)().then((data)=>{
-            (0, _productsLayout.createMarkup)(data);
-            (0, _deletingProducts.deleteProduct)();
-            openModal();
-        });
+        await (0, _editProductApi.editProductApi)(productDataToEdit, parentId);
+        const data = await (0, _getProductsApi.getProductsAPI)();
+        (0, _productsLayout.createMarkup)(data);
+        (0, _deletingProducts.deleteProduct)();
+        openModal();
     });
-    const editModalClose = document.querySelector('.close-edit-modal');
-    editModalClose.addEventListener('click', ()=>{
-        document.querySelector('.edit-modal').classList.add('is-hidden');
+    const editModalClose = document.querySelector(".close-edit-modal");
+    editModalClose.addEventListener("click", ()=>{
+        document.querySelector(".edit-modal").classList.add("is-hidden");
     });
 };
 
-},{"../services/editProductApi":"lG2kt","../services/getProductsApi":"77vlQ","../productsLayout":"dViIg","../deletingProducts":"jiEk7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lG2kt":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../services/editProductApi":"lG2kt","../services/getProductsApi":"77vlQ","../productsLayout":"dViIg","../deletingProducts":"jiEk7"}],"lG2kt":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editProductApi", ()=>editProductApi);
 const editProductApi = async (data, editedProductId)=>{
-    console.log(data, editedProductId);
+    console.log(data, editedProductId); // Для дебагу
     try {
-        return await fetch(`https://67a7982f203008941f680c6c.mockapi.io/products/products${editedProductId}`, {
+        return await fetch(`https://67a7982f203008941f680c6c.mockapi.io/products/products/${editedProductId}`, {
             method: "PUT",
             body: JSON.stringify(data),
             headers: {
@@ -801,17 +810,16 @@ formEl.addEventListener('submit', async (e)=>{
     e.preventDefault();
     modalEl.classList.add('is-hidden');
     const productDataToAdd = {
-        name: `${formEl.elements.name.value}`,
-        price: `${formEl.elements.price.value}`,
-        description: `${formEl.elements.description.value}`,
-        img: `${formEl.elements.img.value}`
+        name: formEl.elements.name.value,
+        price: formEl.elements.price.value,
+        description: formEl.elements.description.value,
+        img: formEl.elements.img.value
     };
-    await (0, _addProducrApi.addProductApi)(productDataToAdd).then((data)=>data);
-    await (0, _getProductsApi.getProductsAPI)().then((data)=>{
-        (0, _productsLayout.createMarkup)(data);
-        (0, _deletingProducts.deleteProduct)();
-        (0, _editProductModal.openModal)();
-    });
+    await (0, _addProducrApi.addProductApi)(productDataToAdd);
+    const data = await (0, _getProductsApi.getProductsAPI)();
+    (0, _productsLayout.createMarkup)(data);
+    (0, _deletingProducts.deleteProduct)();
+    (0, _editProductModal.openModal)();
 });
 
 },{"../services/addProducrApi":"ez8j3","../services/getProductsApi":"77vlQ","../productsLayout":"dViIg","../deletingProducts":"jiEk7","../modal/edit-product-modal":"8DZzw"}],"ez8j3":[function(require,module,exports,__globalThis) {
