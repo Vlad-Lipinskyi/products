@@ -11,10 +11,8 @@ export const deleteProduct = () => {
             const productId = deleteBtn.parentElement.id;
             
             try {
-                // Видаляємо продукт через API
                 await deleteProductApi(productId);
                 
-                // Оновлюємо список продуктів
                 const data = await getProductsAPI();
                 createMarkup(data); 
                 deleteProduct(); 
